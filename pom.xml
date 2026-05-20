@@ -11,6 +11,7 @@
     <groupId>com.example</groupId>
     <artifactId>nova-mall</artifactId>
     <version>0.0.1-SNAPSHOT</version>
+    <packaging>pom</packaging>
     <name>nova-mall</name>
     <description>nova-mall</description>
     <url/>
