@@ -21,6 +21,9 @@
     <developers>
         <developer/>
     </developers>
+    <modules>
+        <module>user</module>
+    </modules>
     <scm>
         <connection/>
         <developerConnection/>
