@@ -23,6 +23,7 @@
     </developers>
     <modules>
         <module>user</module>
+        <module>generator</module>
     </modules>
     <scm>
         <connection/>
