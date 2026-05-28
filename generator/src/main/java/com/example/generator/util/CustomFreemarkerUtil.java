@@ -4,10 +4,7 @@ import freemarker.template.Configuration;
 import freemarker.template.DefaultObjectWrapper;
 import freemarker.template.Template;
 
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
 import java.util.Map;
 
 public class CustomFreemarkerUtil {
@@ -29,5 +26,18 @@ public class CustomFreemarkerUtil {
         template.process(map, bw);
         bw.flush();
         fw.close();
+    }
+
+    public static Template getTemplateInstance(String ftlName) throws IOException {
+        Configuration cfg = new Configuration(Configuration.VERSION_2_3_33);
+        cfg.setDirectoryForTemplateLoading(new File(templatePath));
+        cfg.setObjectWrapper(new DefaultObjectWrapper(Configuration.VERSION_2_3_33));
+        return cfg.getTemplate(ftlName);
+    }
+
+    public static String generateToString(Template template, Map<String, Object> map) throws Exception {
+        StringWriter out = new StringWriter();
+        template.process(map, out);
+        return out.toString();
     }
 }

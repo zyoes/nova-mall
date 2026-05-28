@@ -67,11 +67,11 @@ public class CustomDbUtil {
                 } else {
                     field.setLength(0);
                 }
-                field.setSearchable(comment.contains("｜searchable"));
-
-                field.setImageColumn(comment.contains("｜imageColumn"));
+                field.setSearchable(comment.contains("searchable"));
 
                 field.setHasOption(comment.contains("【") && comment.contains("、") && comment.contains("】"));
+
+                field.setImageColumn(comment.contains("imageColumn"));
 
                 fieldList.add(field);
             }
