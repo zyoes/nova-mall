@@ -13,12 +13,12 @@ import java.util.Map;
 
 public class CustomCodeGenerator4Module {
     static String groupId = "com.example";
-    static String rootProjectName = "cr";
-    static String javaVersion = "21";
+    static String rootProjectName = "nova-mall";
+    static String javaVersion = "17";
     static String basePath = "[module]/src/main/java/com/example/[module]/";
 
     public static void main(String[] args) throws Exception {
-        String module = "user";
+        String module = "common";
 
         basePath = basePath.replace("[module]", module);
         new File(basePath).mkdirs();
