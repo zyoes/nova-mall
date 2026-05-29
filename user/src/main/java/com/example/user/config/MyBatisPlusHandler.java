@@ -1,7 +1,7 @@
 package com.example.user.config;
 
 import com.baomidou.mybatisplus.core.handlers.MetaObjectHandler;
-//import com.example.common.core.UserContext;
+import com.example.common.core.UserContext;
 import org.apache.ibatis.reflection.MetaObject;
 import org.springframework.stereotype.Component;
 
@@ -12,12 +12,18 @@ public class MyBatisPlusHandler implements MetaObjectHandler {
     @Override
     public void insertFill(MetaObject metaObject) {
         this.setFieldValByName("createdAt", LocalDateTime.now(), metaObject);
-//        this.setFieldValByName("createdBy", UserContext.get(), metaObject);
+        Long userId = UserContext.get();
+        if (userId != null) {
+            this.setFieldValByName("createdBy", userId, metaObject);
+        }
     }
 
     @Override
     public void updateFill(MetaObject metaObject) {
         this.setFieldValByName("updatedAt", LocalDateTime.now(), metaObject);
-//        this.setFieldValByName("updatedBy", UserContext.get(), metaObject);
+        Long userId = UserContext.get();
+        if (userId != null) {
+            this.setFieldValByName("updatedBy", userId, metaObject);
+        }
     }
 }
