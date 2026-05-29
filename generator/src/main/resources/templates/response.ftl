@@ -3,8 +3,7 @@ package com.example.${module}.dto.response;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 
 <#list typeSet as type>
     <#if type == 'LocalDateTime'>
@@ -21,8 +20,7 @@ import java.math.BigDecimal;
     </#if>
 </#list>
 
-@Getter
-@Setter
+@Data
 public class ${Domain}Response {
 <#assign ignoreColumns = ["created_by", "updated_at", "updated_by", "deleted", "deleted_at", "deleted_by"]>
 

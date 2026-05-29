@@ -2,11 +2,9 @@ package com.example.${module}.dto.request;
 
 import com.example.common.request.PageRequest;
 import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 
-@Getter
-@Setter
+@Data
 public class ${Domain}ListRequest extends PageRequest {
 <#-- 判断表是否有 user_id 字段 -->
 <#assign hasUserId = false>

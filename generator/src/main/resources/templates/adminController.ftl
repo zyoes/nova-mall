@@ -8,16 +8,16 @@ import com.example.${module}.dto.response.${Domain}Response;
 import com.example.${module}.service.${Domain}Service;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
 @RequestMapping("admin/${doHyphenMain}")
+@RequiredArgsConstructor
 public class ${Domain}AdminController {
-    @Autowired
-    private ${Domain}Service ${domain}Service;
+    private final ${Domain}Service ${domain}Service;
 
     @Operation(summary = "${tableNameCn!}列表")
     @GetMapping("/list")

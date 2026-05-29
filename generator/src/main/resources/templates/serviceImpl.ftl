@@ -187,6 +187,8 @@ public class ${Domain}ServiceImpl extends ServiceImpl<${Domain}Mapper, ${Domain}
         PageResponse<${Domain}Response> response = new PageResponse<>();
         response.setTotal(page.getTotal());
         response.setList(list);
+        response.setPage((int) page.getCurrent());
+        response.setSize((int) page.getSize());
         return response;
     }
 

@@ -8,16 +8,16 @@ import com.example.${module}.dto.response.${Domain}Response;
 import com.example.${module}.service.${Domain}Service;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
 @RequestMapping("${doHyphenMain}")
+@RequiredArgsConstructor
 public class ${Domain}Controller {
-    @Autowired
-    private ${Domain}Service ${domain}Service;
+    private final ${Domain}Service ${domain}Service;
 
     @Operation(summary = "新增/修改${tableNameCn!}")
     @PostMapping("/save")

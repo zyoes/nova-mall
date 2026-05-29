@@ -5,8 +5,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 import com.fasterxml.jackson.annotation.JsonFormat;
 <#list typeSet as type>
     <#if type == 'LocalDateTime'>
@@ -23,8 +22,7 @@ import java.math.BigDecimal;
     </#if>
 </#list>
 
-@Getter
-@Setter
+@Data
 public class ${Domain}Request {
 
 <#list fieldList as field>
