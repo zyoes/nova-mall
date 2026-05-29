@@ -2,10 +2,10 @@ package com.example.${module}.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.example.${module}.entity.${Domain};
-import com.example.${module}.request.${Domain}ListRequest;
+import com.example.${module}.dto.request.${Domain}ListRequest;
 import com.example.common.response.PageResponse;
-import com.example.${module}.response.${Domain}Response;
-import com.example.${module}.request.${Domain}Request;
+import com.example.${module}.dto.response.${Domain}Response;
+import com.example.${module}.dto.request.${Domain}Request;
 
 import java.util.List;
 

@@ -76,10 +76,10 @@ public class CustomCodeGenerator {
         generate(Domain, data, "mapper", "mapper");
 
         // 自动生成 XxxListRequest
-        generate(Domain, data, "request", "listRequest");
+        generate(Domain, data, "dto/request", "listRequest");
 
         // 自动生成 XxxResponse
-        generate(Domain, data, "response", "response");
+        generate(Domain, data, "dto/response", "response");
 
         // 自动生成 XxxService
         generate(Domain, data, "service", "service");
@@ -105,7 +105,7 @@ public class CustomCodeGenerator {
         generateVue(Domain, data);
 
         // 自动生成 XxxRequest
-        generate(Domain, data, "request", "request");
+        generate(Domain, data, "dto/request", "request");
 
         System.out.println("========");
         System.out.println("修改 AppLayout.vue 文件的 menuConfig 菜单变量值 L172");

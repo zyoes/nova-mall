@@ -1,4 +1,4 @@
-package com.example.${module}.response;
+package com.example.${module}.dto.response;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;

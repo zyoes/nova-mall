@@ -1,10 +1,10 @@
 package com.example.${module}.controller.admin;
 
 import com.example.common.response.R;
-import com.example.${module}.request.${Domain}ListRequest;
-import com.example.${module}.request.${Domain}Request;
+import com.example.${module}.dto.request.${Domain}ListRequest;
+import com.example.${module}.dto.request.${Domain}Request;
 import com.example.common.response.PageResponse;
-import com.example.${module}.response.${Domain}Response;
+import com.example.${module}.dto.response.${Domain}Response;
 import com.example.${module}.service.${Domain}Service;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
