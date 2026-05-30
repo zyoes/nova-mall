@@ -13,7 +13,12 @@ public class RegisterRequest {
     @NotBlank(message = "密码不能为空！")
     private String password;
 
+    @NotBlank(message = "用户名不能为空")
     private String name;
 
+    @NotBlank(message = "手机号不能为空")
     private String mobile;
+
+    @NotBlank(message = "验证码不能为空！")
+    private String verifyCode;
 }

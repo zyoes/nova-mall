@@ -8,6 +8,24 @@ spring:
     password: xxx
     driver-class-name: com.mysql.cj.jdbc.Driver
 
+  data:
+    redis:
+      host: xxx
+      port: 6379
+      password: xxx
+
+  mail:
+    host: smtp.qq.com
+    port: 587
+    username: xxx@xxx.com
+    password: xxx
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+
 
 mybatis-plus:
   mapper-locations: classpath:mapper/**/*.xml
