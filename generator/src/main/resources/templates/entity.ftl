@@ -1,6 +1,7 @@
 package com.example.${module}.entity;
 
 import com.baomidou.mybatisplus.annotation.TableField;
+import com.example.common.entity.BaseEntity;
 import lombok.Getter;
 import lombok.Setter;
 

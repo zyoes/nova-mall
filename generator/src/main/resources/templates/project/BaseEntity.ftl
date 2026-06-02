@@ -1,4 +1,4 @@
-package ${groupId}.${module}.entity;
+package ${groupId}.common.entity;
 
 import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.IdType;
