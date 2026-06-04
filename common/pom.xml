@@ -52,6 +52,23 @@
             <artifactId>jspecify</artifactId>
             <version>1.0.0</version>
         </dependency>
+
+        <dependency>
+            <groupId>cn.hutool</groupId>
+            <artifactId>hutool-all</artifactId>
+            <version>5.8.42</version>
+        </dependency>
+        <!-- 发送邮箱 -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-mail</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.jspecify</groupId>
+            <artifactId>jspecify</artifactId>
+            <version>1.0.0</version> <!-- 请使用最新稳定版 -->
+        </dependency>
     </dependencies>
 
     <build>

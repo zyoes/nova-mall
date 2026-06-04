@@ -1,10 +1,65 @@
 package com.example.user.controller;
 
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import com.example.common.response.R;
+import com.example.common.util.EmailUtil;
+import com.example.common.util.JwtUtil;
+import com.example.user.dao.request.LoginRequest;
+import com.example.user.dao.request.RegisterRequest;
+import com.example.user.dao.request.SendCodeRequest;
+import com.example.user.dao.response.LoginResponse;
+import com.example.user.entity.SysUser;
+import com.example.user.service.EmailVerificationService;
+import com.example.user.service.AuthService;
+import jakarta.validation.Valid;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/auth")
 public class AuthController {
+    @Autowired
+    AuthService authService;
 
+    @Autowired
+    EmailVerificationService emailVerificationService;
+
+    @Autowired
+    JwtUtil jwtUtil;
+
+    @Autowired
+    EmailUtil emailUtil;
+
+    @PostMapping("/register")
+    public R<Object> register(@RequestBody @Valid RegisterRequest request) {
+        emailVerificationService.validateAndConsumeRegisterCode(request.getEmail(), request.getVerifyCode());
+        boolean result = authService.register(request);
+        return new R<>(200, "注册成功", result);
+    }
+
+    @PostMapping("/send-code")
+    public R<Object> sendEmailCode(@RequestBody @Valid SendCodeRequest request) {
+        authService.ensureEmailNotRegistered(request.getEmail());
+
+        String code = emailVerificationService.generateAndSaveRegisterCode(request.getEmail());
+        System.out.println(code);
+
+        emailUtil.sendEmailCode(request.getEmail(), code);
+
+        return R.ok();
+    }
+
+    @PostMapping("/login")
+    public R<LoginResponse> login(@RequestBody @Valid LoginRequest request) {
+        SysUser sysUser = authService.authenticate(request.getEmail(), request.getPassword());
+
+        String token = jwtUtil.generateToken(sysUser.getId(), sysUser.getName());
+        System.out.println(token);
+        
+        LoginResponse response = LoginResponse.builder()
+                .accessToken(token)
+                .userId(sysUser.getId().toString())
+                .email(sysUser.getEmail()).build();
+
+        return R.ok(response);
+    }
 }
