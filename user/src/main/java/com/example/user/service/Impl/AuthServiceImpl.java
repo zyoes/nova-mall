@@ -4,7 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.example.common.exception.CustomUnauthorizedException;
 import com.example.common.exception.CustomValidationException;
-import com.example.user.dao.request.RegisterRequest;
+import com.example.user.dto.request.RegisterRequest;
 import com.example.user.entity.SysUser;
 import com.example.user.mapper.SysUserMapper;
 import com.example.user.service.AuthService;

@@ -1,4 +1,4 @@
-package com.example.user.dao.response;
+package com.example.user.dto.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
