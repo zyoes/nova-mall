@@ -31,7 +31,7 @@ public class UserProfileController {
 
     @Operation(summary = "更新密码")
     @PutMapping("/updatePassword")
-    public R<Object> updatePassword(UserPasswordRequest request) {
+    public R<Object> updatePassword(@Valid @RequestBody UserPasswordRequest request) {
         // TODO 前端传入旧密码需要用密钥对进行加密
         userProfileService.updatePassword(request);
         return R.ok("更新密码成功", null);

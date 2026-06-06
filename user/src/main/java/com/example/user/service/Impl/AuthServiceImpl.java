@@ -82,7 +82,7 @@ public class AuthServiceImpl extends ServiceImpl<SysUserMapper,SysUser> implemen
         qw.eq("mobile", mobile);
         Optional<SysUser> userOpt = this.getOneOpt(qw);
         if (userOpt.isPresent()){
-            // 如果存在就是邮箱已被注册
+            // 如果存在就是手机已被注册
             throw new CustomValidationException("手机号已被使用", 400);
         }
     }
