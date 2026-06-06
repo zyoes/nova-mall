@@ -10,6 +10,7 @@ import com.example.user.dto.response.LoginResponse;
 import com.example.user.entity.SysUser;
 import com.example.user.service.EmailVerificationService;
 import com.example.user.service.AuthService;
+import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -29,6 +30,7 @@ public class AuthController {
     @Autowired
     EmailUtil emailUtil;
 
+    @Operation(summary = "用户注册")
     @PostMapping("/register")
     public R<Object> register(@RequestBody @Valid RegisterRequest request) {
         emailVerificationService.validateAndConsumeRegisterCode(request.getEmail(), request.getVerifyCode());
@@ -36,6 +38,7 @@ public class AuthController {
         return new R<>(200, "注册成功", result);
     }
 
+    @Operation(summary = "发送邮箱验证码")
     @PostMapping("/send-code")
     public R<Object> sendEmailCode(@RequestBody @Valid SendCodeRequest request) {
         authService.ensureEmailNotRegistered(request.getEmail());
@@ -48,6 +51,7 @@ public class AuthController {
         return R.ok();
     }
 
+    @Operation(summary = "用户登录")
     @PostMapping("/login")
     public R<LoginResponse> login(@RequestBody @Valid LoginRequest request) {
         SysUser sysUser = authService.authenticate(request.getEmail(), request.getPassword());
