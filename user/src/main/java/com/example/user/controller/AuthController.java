@@ -35,7 +35,7 @@ public class AuthController {
     public R<Object> register(@RequestBody @Valid RegisterRequest request) {
         emailVerificationService.validateAndConsumeRegisterCode(request.getEmail(), request.getVerifyCode());
         boolean result = authService.register(request);
-        return new R<>(200, "注册成功", result);
+        return R.ok("注册成功", result);
     }
 
     @Operation(summary = "发送邮箱验证码")

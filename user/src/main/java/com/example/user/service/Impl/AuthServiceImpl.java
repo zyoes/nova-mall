@@ -62,6 +62,7 @@ public class AuthServiceImpl extends ServiceImpl<SysUserMapper,SysUser> implemen
         sysUser.setPassword(new BCryptPasswordEncoder().encode(request.getPassword()));
         sysUser.setName(request.getName());
         sysUser.setCreatedAt(LocalDateTime.now());
+        sysUser.setCreatedBy(sysUser.getId());
 
         return this.save(sysUser);
     }
