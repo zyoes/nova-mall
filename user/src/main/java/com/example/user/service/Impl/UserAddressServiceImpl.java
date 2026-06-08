@@ -44,6 +44,7 @@ public class UserAddressServiceImpl extends ServiceImpl<UserAddressMapper, UserA
                     .or().like("district", request.getKeyword())
                     .or().like("address", request.getKeyword()));
         }
+        qw.orderByDesc("is_default").orderByDesc("updated_at");
 
         this.page(page, qw);
 
@@ -71,7 +72,6 @@ public class UserAddressServiceImpl extends ServiceImpl<UserAddressMapper, UserA
         qw.eq("city", request.getCity());
         qw.eq("district", request.getDistrict());
         qw.eq("address", request.getAddress());
-        qw.eq("deleted", 0);
 
         if (id != null) {
             qw.ne("id", id);
@@ -83,7 +83,7 @@ public class UserAddressServiceImpl extends ServiceImpl<UserAddressMapper, UserA
         // 设置默认地址
         if (request.getIsDefault().equals(1)) {
             // 取消当前用户默认地址
-            cancelCurrentUserDefaultAddress();
+            cancelCurrentUserDefaultAddress(id);
         }
 
         // 新增
@@ -122,9 +122,6 @@ public class UserAddressServiceImpl extends ServiceImpl<UserAddressMapper, UserA
     @Override
     @Transactional
     public boolean setDefaultUserAddress(Long id) {
-        // 取消当前用户默认地址
-        cancelCurrentUserDefaultAddress();
-
         // 设置默认地址
         UserAddress userAddress = findUserAddressById(id);
 
@@ -132,6 +129,9 @@ public class UserAddressServiceImpl extends ServiceImpl<UserAddressMapper, UserA
         if (!userAddress.getUserId().equals(UserContext.get())) {
             throw new CustomValidationException("当前用户无权限设置默认地址");
         }
+
+        // 取消当前用户默认地址
+        cancelCurrentUserDefaultAddress(id);
 
         if (userAddress.getIsDefault().equals(0)) {
             userAddress.setIsDefault(1);
@@ -157,10 +157,13 @@ public class UserAddressServiceImpl extends ServiceImpl<UserAddressMapper, UserA
      * 取消当前用户默认地址
      *
      */
-    private void cancelCurrentUserDefaultAddress() {
+    private void cancelCurrentUserDefaultAddress(Long id) {
         QueryWrapper<UserAddress> qw = new QueryWrapper<>();
         qw.eq("user_id", UserContext.get());
         qw.eq("is_default", 1);
+        if(id != null) {
+            qw.ne("id", id);
+        }
 
         UserAddress userAddress = new UserAddress();
         userAddress.setIsDefault(0);

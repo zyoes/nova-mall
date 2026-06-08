@@ -31,6 +31,7 @@ public abstract class BaseEntity {
     private Long updatedBy;
 
     @Schema(description = "逻辑删除标记 (0:正常, 非0:已删除)")
+    @TableLogic
     private Long deleted;
 
     @Schema(description = "删除时间")
