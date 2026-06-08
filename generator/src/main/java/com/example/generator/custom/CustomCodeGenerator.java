@@ -14,14 +14,14 @@ import java.util.*;
 public class CustomCodeGenerator {
     static String basePath = "[module]/src/main/java/com/example/[module]/";
 
-    static String frontendType = "frontend-admin";
+    static String frontendType = "frontend";
     static String apiJsPath = frontendType + "/src/api/[module]/";
 
     static String vuePath = frontendType + "/src/views/[module]/";
     static boolean readOnly = false;
 
     public static void main(String[] args) throws Exception {
-        String module = "business";
+        String module = "user";
         System.out.println("module=" + module);
 
         // 构造出真正要生成的目标位置
@@ -30,7 +30,7 @@ public class CustomCodeGenerator {
         System.out.println("basePath: " + basePath);
 
         // 表名、对应实体类名
-        String tableName = "confirm_order";
+        String tableName = "user_address";
         // 首字母大写的实体类名（也可以字段转化【注意多个单词的表名形式和表前缀等场景】这里为例讲解核心逻辑，先从简）
         String Domain = StrUtil.upperFirst(StrUtil.toCamelCase(tableName));
         System.out.println("表名：" + tableName + "，对应的实体名：" + Domain);
@@ -82,27 +82,27 @@ public class CustomCodeGenerator {
         generate(Domain, data, "dto/response", "response");
 
         // 自动生成 XxxService
-        generate(Domain, data, "service", "service");
+//        generate(Domain, data, "service", "service");
 
         // 自动生成 XxxServiceImpl
-        generate(Domain, data, "service/impl", "serviceImpl");
+//        generate(Domain, data, "service/impl", "serviceImpl");
 
         if (frontendType.endsWith("admin")) {
             // 自动生成 XxxAdminController
             generate(Domain, data, "controller/admin", "adminController");
 
             // 自动生成 xxxAdmin.js
-            generateApiJs(domain, data, "apiAdminJs");
+//            generateApiJs(domain, data, "apiAdminJs");
         } else {
             // 自动生成 XxxController
             generate(Domain, data, "controller", "controller");
 
             // 自动生成 xxx.js
-            generateApiJs(domain, data, "apiJs");
+//            generateApiJs(domain, data, "apiJs");
         }
 
         // 自动生成 xxxVue
-        generateVue(Domain, data);
+//        generateVue(Domain, data);
 
         // 自动生成 XxxRequest
         generate(Domain, data, "dto/request", "request");
