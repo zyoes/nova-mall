@@ -1,7 +1,6 @@
 package com.example.user.controller;
 
 import com.example.common.response.R;
-import com.example.common.util.EmailUtil;
 import com.example.common.util.JwtUtil;
 import com.example.user.dto.request.LoginRequest;
 import com.example.user.dto.request.RegisterRequest;
@@ -41,13 +40,7 @@ public class AuthController {
     @Operation(summary = "发送邮箱验证码")
     @PostMapping("/send-code")
     public R<Object> sendEmailCode(@RequestBody @Valid SendCodeRequest request) {
-        authService.ensureEmailNotRegistered(request.getEmail());
-
-        String code = emailVerificationService.generateAndSaveRegisterCode(request.getEmail());
-        System.out.println(code);
-
-        emailUtil.sendEmailCode(request.getEmail(), code);
-
+        emailVerificationService.sendRegisterCode(request.getEmail());
         return R.ok();
     }
 
