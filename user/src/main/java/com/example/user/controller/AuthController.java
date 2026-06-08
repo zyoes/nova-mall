@@ -11,23 +11,19 @@ import com.example.user.service.EmailVerificationService;
 import com.example.user.service.AuthService;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/auth")
+@RequiredArgsConstructor
 public class AuthController {
-    @Autowired
-    AuthService authService;
 
-    @Autowired
-    EmailVerificationService emailVerificationService;
+    private final AuthService authService;
 
-    @Autowired
-    JwtUtil jwtUtil;
+    private final EmailVerificationService emailVerificationService;
 
-    @Autowired
-    EmailUtil emailUtil;
+    private final JwtUtil jwtUtil;
 
     @Operation(summary = "用户注册")
     @PostMapping("/register")

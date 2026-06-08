@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("user")
 @RequiredArgsConstructor
 public class UserProfileController {
+
     private final UserProfileService userProfileService;
 
     @Operation(summary = "查看个人信息")

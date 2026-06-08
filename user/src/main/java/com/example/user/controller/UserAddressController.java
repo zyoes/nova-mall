@@ -1,25 +1,22 @@
 package com.example.user.controller;
 
+import com.example.common.response.PageResponse;
 import com.example.common.response.R;
 import com.example.user.dto.request.UserAddressListRequest;
 import com.example.user.dto.request.UserAddressRequest;
-import com.example.common.response.PageResponse;
 import com.example.user.dto.response.UserAddressResponse;
 import com.example.user.service.UserAddressService;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("user-address")
 @RequiredArgsConstructor
 public class UserAddressController {
-    @Autowired
-    UserAddressService userAddressService;
+
+    private final UserAddressService userAddressService;
 
     /**
      * 获取用户地址列表
