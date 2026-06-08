@@ -14,16 +14,21 @@ import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
+/**
+ * 认证服务实现类
+ */
 @Service
 public class AuthServiceImpl extends ServiceImpl<SysUserMapper,SysUser> implements AuthService {
     @Autowired
     PasswordEncoder passwordEncoder;
 
     /**
-     * 用户登录
-     * @param email
-     * @param password
-     * @return
+     * 用户登录认证
+     * 根据邮箱查询用户，并验证密码是否匹配
+     *
+     * @param email    用户邮箱
+     * @param password 用户密码（明文）
+     * @return 认证通过的用户实体
      */
     @Override
     public SysUser authenticate(String email, String password) {
@@ -42,8 +47,11 @@ public class AuthServiceImpl extends ServiceImpl<SysUserMapper,SysUser> implemen
     }
 
     /**
-     * 注册用户信息
-     * @param request
+     * 用户注册
+     * 依次校验邮箱唯一性、手机号唯一性，然后创建用户并加密密码
+     *
+     * @param request 注册请求
+     * @return 是否注册成功
      */
     @Override
     public boolean register(RegisterRequest request) {
@@ -63,6 +71,12 @@ public class AuthServiceImpl extends ServiceImpl<SysUserMapper,SysUser> implemen
         return this.save(sysUser);
     }
 
+    /**
+     * 校验邮箱是否已被注册
+     *
+     * @param email 待校验邮箱
+     * @throws CustomValidationException 邮箱已被注册时抛出
+     */
     public void ensureEmailNotRegistered(String email){
         QueryWrapper<SysUser> qw = new QueryWrapper<>();
         qw.eq("email", email);
@@ -73,6 +87,12 @@ public class AuthServiceImpl extends ServiceImpl<SysUserMapper,SysUser> implemen
         }
     }
 
+    /**
+     * 校验手机号是否已被注册
+     *
+     * @param mobile 待校验手机号
+     * @throws CustomValidationException 手机号已被使用时抛出
+     */
     public void ensureMobileNotRegistered(String mobile){
         QueryWrapper<SysUser> qw = new QueryWrapper<>();
         qw.eq("mobile", mobile);

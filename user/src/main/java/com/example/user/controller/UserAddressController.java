@@ -11,6 +11,10 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
+/**
+ * 用户收货地址控制器
+ * 处理地址的增删改查及设置默认地址等操作
+ */
 @RestController
 @RequestMapping("user-address")
 @RequiredArgsConstructor
@@ -19,7 +23,10 @@ public class UserAddressController {
     private final UserAddressService userAddressService;
 
     /**
-     * 获取用户地址列表
+     * 获取用户地址列表（分页）
+     *
+     * @param request 地址列表请求（包含分页参数和搜索关键词）
+     * @return 分页地址列表
      */
     @Operation(summary = "获取用户地址列表")
     @PostMapping("list")
@@ -29,6 +36,9 @@ public class UserAddressController {
 
     /**
      * 保存或更新用户地址
+     *
+     * @param request 用户地址请求（包含收货人信息、地址详情、是否默认）
+     * @return 操作结果
      */
     @Operation(summary = "保存或更新用户地址")
     @PostMapping("save-or-update")
@@ -38,6 +48,9 @@ public class UserAddressController {
 
     /**
      * 删除用户地址
+     *
+     * @param id 用户地址 ID
+     * @return 操作结果
      */
     @Operation(summary = "删除用户地址")
     @PostMapping("delete")
@@ -47,6 +60,9 @@ public class UserAddressController {
 
     /**
      * 设置默认用户地址
+     *
+     * @param id 用户地址 ID
+     * @return 操作结果
      */
     @Operation(summary = "设置默认用户地址")
     @PostMapping("set-default")

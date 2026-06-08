@@ -19,9 +19,19 @@ import org.springframework.util.StringUtils;
 
 import java.util.List;
 
+/**
+ * 用户收货地址服务实现类
+ */
 @Service
 public class UserAddressServiceImpl extends ServiceImpl<UserAddressMapper, UserAddress> implements UserAddressService {
 
+    /**
+     * 获取当前登录用户的地址列表（分页）
+     * 支持关键词搜索（收货人、手机号、省市区、详细地址），默认地址优先排序
+     *
+     * @param request 地址列表请求（包含分页参数和搜索关键词）
+     * @return 分页地址列表
+     */
     @Override
     public PageResponse<UserAddressResponse> getUserAddressByUserId(UserAddressListRequest request) {
         // 分页
@@ -58,6 +68,15 @@ public class UserAddressServiceImpl extends ServiceImpl<UserAddressMapper, UserA
         return response;
     }
 
+    /**
+     * 保存或更新用户地址
+     * 新增时自动设置 userId；更新时校验地址归属权
+     * 若设为默认地址，会先取消该用户其他默认地址
+     *
+     * @param request 用户地址请求
+     * @return 是否操作成功
+     * @throws CustomValidationException 地址重复或无权限时抛出
+     */
     @Override
     @Transactional
     public boolean saveOrUpdateUserAddress(UserAddressRequest request) {
@@ -105,6 +124,14 @@ public class UserAddressServiceImpl extends ServiceImpl<UserAddressMapper, UserA
         }
     }
 
+    /**
+     * 删除用户地址
+     * 先校验地址存在性，再校验归属权，最后执行逻辑删除
+     *
+     * @param id 用户地址 ID
+     * @return 是否删除成功
+     * @throws CustomValidationException 地址不存在或无权限时抛出
+     */
     @Override
     @Transactional
     public boolean deleteUserAddress(Long id) {
@@ -119,6 +146,14 @@ public class UserAddressServiceImpl extends ServiceImpl<UserAddressMapper, UserA
         return this.removeById(id);
     }
 
+    /**
+     * 设置默认用户地址
+     * 先校验地址存在性和归属权，再取消该用户其他默认地址，最后将目标地址设为默认
+     *
+     * @param id 用户地址 ID
+     * @return 是否设置成功
+     * @throws CustomValidationException 地址不存在或无权限时抛出
+     */
     @Override
     @Transactional
     public boolean setDefaultUserAddress(Long id) {
