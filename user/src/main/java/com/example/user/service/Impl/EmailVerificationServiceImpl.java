@@ -42,8 +42,8 @@ public class EmailVerificationServiceImpl implements EmailVerificationService {
         String codeFromRedis = stringRedisTemplate.opsForValue().get(key);
         if(codeFromRedis == null || !codeFromRedis.equalsIgnoreCase(code)){
             throw new CustomValidationException("验证码错误", 400);
-//            return new R<>(400, "验证码错误", null);
         }
+
         // 验证码校验通过之后从 redis 删除，防止重复使用
         stringRedisTemplate.delete(key);
     }

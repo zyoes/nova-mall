@@ -46,7 +46,6 @@ public class AuthController {
         SysUser sysUser = authService.authenticate(request.getEmail(), request.getPassword());
 
         String token = jwtUtil.generateToken(sysUser.getId(), sysUser.getName());
-        System.out.println(token);
         
         LoginResponse response = LoginResponse.builder()
                 .accessToken(token)

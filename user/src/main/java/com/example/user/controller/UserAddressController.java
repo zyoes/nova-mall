@@ -41,7 +41,7 @@ public class UserAddressController {
      */
     @Operation(summary = "删除用户地址")
     @PostMapping("delete")
-    public R<Object> deleteUserAddress(Long id) {
+    public R<Object> deleteUserAddress(@RequestParam Long id) {
         return R.ok(userAddressService.deleteUserAddress(id));
     }
 
@@ -50,7 +50,7 @@ public class UserAddressController {
      */
     @Operation(summary = "设置默认用户地址")
     @PostMapping("set-default")
-    public R<Object> setDefaultUserAddress(Long id) {
+    public R<Object> setDefaultUserAddress(@RequestParam Long id) {
         return R.ok(userAddressService.setDefaultUserAddress(id));
     }
 }

@@ -9,11 +9,9 @@ import com.example.user.entity.SysUser;
 import com.example.user.mapper.SysUserMapper;
 import com.example.user.service.AuthService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
 import java.util.Optional;
 
 @Service
@@ -59,10 +57,8 @@ public class AuthServiceImpl extends ServiceImpl<SysUserMapper,SysUser> implemen
         SysUser sysUser = new SysUser();
         sysUser.setEmail(request.getEmail());
         sysUser.setMobile(request.getMobile());
-        sysUser.setPassword(new BCryptPasswordEncoder().encode(request.getPassword()));
+        sysUser.setPassword(passwordEncoder.encode(request.getPassword()));
         sysUser.setName(request.getName());
-        sysUser.setCreatedAt(LocalDateTime.now());
-        sysUser.setCreatedBy(sysUser.getId());
 
         return this.save(sysUser);
     }
