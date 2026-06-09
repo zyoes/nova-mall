@@ -14,6 +14,7 @@ import com.example.product.entity.ProductSku;
 import com.example.product.mapper.ProductMapper;
 import com.example.product.service.ProductService;
 import com.example.product.service.ProductSkuService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
@@ -24,14 +25,11 @@ import java.util.List;
  * 商品服务实现。
  */
 @Service
+@RequiredArgsConstructor
 public class ProductServiceImpl extends ServiceImpl<ProductMapper, Product> implements ProductService {
     private static final int PRODUCT_STATUS_ON_SALE = 2;
 
     private final ProductSkuService productSkuService;
-
-    public ProductServiceImpl(ProductSkuService productSkuService) {
-        this.productSkuService = productSkuService;
-    }
 
     /**
      * 保存或更新商品。
