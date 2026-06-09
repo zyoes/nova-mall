@@ -21,6 +21,7 @@
         <dependency>
             <groupId>${groupId}</groupId>
             <artifactId>common</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
         </dependency>
 
         <dependency>

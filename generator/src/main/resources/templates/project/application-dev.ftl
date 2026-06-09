@@ -8,7 +8,6 @@ spring:
     password: xxx
     driver-class-name: com.mysql.cj.jdbc.Driver
 
-
 mybatis-plus:
   mapper-locations: classpath:mapper/**/*.xml
   type-aliases-package: com.example.${module}.entity

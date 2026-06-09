@@ -11,5 +11,6 @@
     {"templateName": "MybatisPlusConfig", "targetPath": "${module}/src/main/java/${groupId}/${module}/config", "targetSuffix": ".java"},
     {"templateName": "MyBatisPlusHandler", "targetPath": "${module}/src/main/java/${groupId}/${module}/config", "targetSuffix": ".java"},
     {"templateName": "OpenAPIConfig", "targetPath": "${module}/src/main/java/${groupId}/${module}/config", "targetSuffix": ".java"},
-    {"templateName": "WebMvcConfig", "targetPath": "${module}/src/main/java/${groupId}/${module}/config", "targetSuffix": ".java"}
+    {"templateName": "WebMvcConfig", "targetPath": "${module}/src/main/java/${groupId}/${module}/config", "targetSuffix": ".java"},
+    {"templateName": "SecurityConfig", "targetPath": "${module}/src/main/java/${groupId}/${module}/config", "targetSuffix": ".java"}
 ]
