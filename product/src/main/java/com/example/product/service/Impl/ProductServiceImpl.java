@@ -7,10 +7,13 @@ import com.example.common.exception.CustomValidationException;
 import com.example.common.response.PageResponse;
 import com.example.product.dto.request.ProductListRequest;
 import com.example.product.dto.request.ProductRequest;
+import com.example.product.dto.request.ProductSkuRequest;
 import com.example.product.dto.response.ProductResponse;
 import com.example.product.entity.Product;
+import com.example.product.entity.ProductSku;
 import com.example.product.mapper.ProductMapper;
 import com.example.product.service.ProductService;
+import com.example.product.service.ProductSkuService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
@@ -22,6 +25,13 @@ import java.util.List;
  */
 @Service
 public class ProductServiceImpl extends ServiceImpl<ProductMapper, Product> implements ProductService {
+    private static final int PRODUCT_STATUS_ON_SALE = 2;
+
+    private final ProductSkuService productSkuService;
+
+    public ProductServiceImpl(ProductSkuService productSkuService) {
+        this.productSkuService = productSkuService;
+    }
 
     /**
      * 保存或更新商品。
@@ -39,7 +49,15 @@ public class ProductServiceImpl extends ServiceImpl<ProductMapper, Product> impl
         product.setStatus(request.getStatus());
         product.setSort(request.getSort());
 
-        return this.saveOrUpdate(product);
+        boolean saved = this.saveOrUpdate(product);
+        if (saved && request.getSkuList() != null && !request.getSkuList().isEmpty()) {
+            for (ProductSkuRequest skuRequest : request.getSkuList()) {
+                skuRequest.setProductId(product.getId());
+                productSkuService.saveOrUpdateSku(skuRequest);
+            }
+        }
+
+        return saved;
     }
 
     /**
@@ -47,7 +65,9 @@ public class ProductServiceImpl extends ServiceImpl<ProductMapper, Product> impl
      */
     @Override
     public PageResponse<ProductResponse> getProductPage(ProductListRequest request) {
-        return executePageQuery(request, buildQuery(request));
+        LambdaQueryWrapper<Product> qw = buildQuery(request, false);
+        qw.eq(Product::getStatus, PRODUCT_STATUS_ON_SALE);
+        return executePageQuery(request, qw);
     }
 
     /**
@@ -55,7 +75,7 @@ public class ProductServiceImpl extends ServiceImpl<ProductMapper, Product> impl
      */
     @Override
     public PageResponse<ProductResponse> getAdminProductPage(ProductListRequest request) {
-        return executePageQuery(request, buildQuery(request));
+        return executePageQuery(request, buildQuery(request, true));
     }
 
     /**
@@ -63,7 +83,16 @@ public class ProductServiceImpl extends ServiceImpl<ProductMapper, Product> impl
      */
     @Override
     public ProductResponse getProductDetail(Long id) {
-        return toResponse(findProduct(id));
+        Product product = this.getOne(new LambdaQueryWrapper<Product>()
+                .eq(Product::getId, id)
+                .eq(Product::getStatus, PRODUCT_STATUS_ON_SALE));
+        if (product == null) {
+            throw new CustomValidationException("商品不存在或已下架");
+        }
+
+        ProductResponse response = toResponse(product);
+        response.setSkuList(productSkuService.getSkuListByProductId(product.getId()));
+        return response;
     }
 
     /**
@@ -73,13 +102,15 @@ public class ProductServiceImpl extends ServiceImpl<ProductMapper, Product> impl
     @Transactional
     public boolean deleteProduct(Long id) {
         findProduct(id);
+        productSkuService.remove(new LambdaQueryWrapper<ProductSku>()
+                .eq(ProductSku::getProductId, id));
         return this.removeById(id);
     }
 
     /**
      * 构建商品查询条件。
      */
-    private LambdaQueryWrapper<Product> buildQuery(ProductListRequest request) {
+    private LambdaQueryWrapper<Product> buildQuery(ProductListRequest request, boolean includeStatus) {
         LambdaQueryWrapper<Product> qw = new LambdaQueryWrapper<>();
 
         if (StringUtils.hasText(request.getKeyword())) {
@@ -88,7 +119,7 @@ public class ProductServiceImpl extends ServiceImpl<ProductMapper, Product> impl
         if (request.getCategoryId() != null) {
             qw.eq(Product::getCategoryId, request.getCategoryId());
         }
-        if (request.getStatus() != null) {
+        if (includeStatus && request.getStatus() != null) {
             qw.eq(Product::getStatus, request.getStatus());
         }
 

@@ -22,6 +22,7 @@ import java.util.List;
  */
 @Service
 public class ProductSkuServiceImpl extends ServiceImpl<ProductSkuMapper, ProductSku> implements ProductSkuService {
+    private static final int SKU_STATUS_ENABLED = 1;
 
     /**
      * 保存或更新商品 SKU。
@@ -71,6 +72,7 @@ public class ProductSkuServiceImpl extends ServiceImpl<ProductSkuMapper, Product
     public List<ProductSkuResponse> getSkuListByProductId(Long productId) {
         return this.list(new LambdaQueryWrapper<ProductSku>()
                         .eq(ProductSku::getProductId, productId)
+                        .eq(ProductSku::getStatus, SKU_STATUS_ENABLED)
                         .orderByDesc(ProductSku::getCreatedAt))
                 .stream()
                 .map(this::toResponse)
