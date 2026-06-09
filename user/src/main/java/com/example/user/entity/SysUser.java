@@ -8,7 +8,7 @@ import lombok.ToString;
 
 @Getter
 @Setter
-@ToString
+@ToString(exclude = "password")
 @TableName("sys_user")
 public class SysUser extends BaseEntity {
     private String email;

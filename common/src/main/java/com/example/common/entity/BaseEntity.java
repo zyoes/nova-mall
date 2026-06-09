@@ -1,9 +1,6 @@
 package com.example.common.entity;
 
-import com.baomidou.mybatisplus.annotation.FieldFill;
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.*;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 import lombok.Setter;
@@ -34,6 +31,7 @@ public abstract class BaseEntity {
     private Long updatedBy;
 
     @Schema(description = "逻辑删除标记 (0:正常, 非0:已删除)")
+    @TableLogic
     private Long deleted;
 
     @Schema(description = "删除时间")

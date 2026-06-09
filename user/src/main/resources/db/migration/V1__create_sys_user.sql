@@ -22,6 +22,3 @@ CREATE TABLE `sys_user`
     UNIQUE KEY `uk_email` (`email`),
     UNIQUE KEY `uk_name` (`name`)
 ) COMMENT ='用户';
-
-INSERT INTO `sys_user` (`id`, `email`, `password`, `name`, `enabled`)
-VALUES (1, 'admin@nova-mall.com', '$2a$10$...', 'admin', 1);
