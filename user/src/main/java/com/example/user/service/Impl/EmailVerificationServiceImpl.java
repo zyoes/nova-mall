@@ -2,7 +2,7 @@ package com.example.user.service.Impl;
 
 import cn.hutool.core.util.RandomUtil;
 import com.example.common.exception.CustomValidationException;
-import com.example.common.util.EmailUtil;
+import com.example.user.util.EmailUtil;
 import com.example.user.service.AuthService;
 import com.example.user.service.EmailVerificationService;
 import jakarta.annotation.Resource;

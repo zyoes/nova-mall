@@ -1,20 +1,17 @@
-package com.example.common.util;
+package com.example.user.util;
 
-import cn.hutool.core.util.RandomUtil;
 import jakarta.mail.internet.InternetAddress;
 import jakarta.mail.internet.MimeMessage;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Component;
 
-import java.util.concurrent.TimeUnit;
-
 @Component
+@RequiredArgsConstructor
 public class EmailUtil {
-    @Autowired
-    JavaMailSender sender;
+    private final JavaMailSender sender;
 
     @Value("${spring.mail.username}")
     String from;
