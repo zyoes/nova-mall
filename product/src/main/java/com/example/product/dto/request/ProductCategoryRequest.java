@@ -1,6 +1,5 @@
 package com.example.product.dto.request;
 
-import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 
@@ -25,12 +24,6 @@ public class ProductCategoryRequest {
      * 父分类ID；0 表示顶级分类。
      */
     private Long parentId = 0L;
-
-    /**
-     * 分类层级；1 表示一级分类。
-     */
-    @Min(value = 1, message = "分类层级不能小于1")
-    private Integer level = 1;
 
     /**
      * 排序值；数值越小越靠前。

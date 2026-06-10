@@ -40,10 +40,12 @@ public class ProductCategoryServiceImpl extends ServiceImpl<ProductCategoryMappe
     @Transactional
     public boolean saveOrUpdateCategory(ProductCategoryRequest request) {
         ProductCategory category = request.getId() == null ? new ProductCategory() : findCategory(request.getId());
+        Long parentId = request.getParentId() == null ? 0L : request.getParentId();
+        Integer level = resolveCategoryLevel(category.getId(), parentId);
 
         category.setName(request.getName());
-        category.setParentId(request.getParentId());
-        category.setLevel(request.getLevel());
+        category.setParentId(parentId);
+        category.setLevel(level);
         category.setSort(request.getSort());
         category.setIcon(request.getIcon());
 
@@ -140,6 +142,45 @@ public class ProductCategoryServiceImpl extends ServiceImpl<ProductCategoryMappe
     private ProductCategory findCategory(Long id) {
         return this.getOptById(id)
                 .orElseThrow(() -> new CustomValidationException("商品分类不存在"));
+    }
+
+    /**
+     * 根据父分类计算当前分类层级，并校验父子关系合法性
+     * @param currentId 当前分类 ID
+     * @param parentId 父分类 ID
+     * @return 当前分类层级
+     */
+    private Integer resolveCategoryLevel(Long currentId, Long parentId) {
+        if (parentId == null || parentId == 0L) {
+            return 1;
+        }
+        if (currentId != null && currentId.equals(parentId)) {
+            throw new CustomValidationException("父分类不能选择当前分类本身");
+        }
+
+        ProductCategory parent = findCategory(parentId);
+        ensureNoCircularParent(currentId, parent);
+        return parent.getLevel() + 1;
+    }
+
+    /**
+     * 防止形成 A -> B -> A 这类循环父子关系
+     */
+    private void ensureNoCircularParent(Long currentId, ProductCategory parent) {
+        if (currentId == null) {
+            return;
+        }
+
+        ProductCategory cursor = parent;
+        while (cursor != null) {
+            if (currentId.equals(cursor.getId())) {
+                throw new CustomValidationException("不能将分类移动到自己的子分类下");
+            }
+            if (cursor.getParentId() == null || cursor.getParentId() == 0L) {
+                break;
+            }
+            cursor = this.getById(cursor.getParentId());
+        }
     }
 
     /**
