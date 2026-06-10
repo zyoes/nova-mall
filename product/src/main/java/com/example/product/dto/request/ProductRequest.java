@@ -2,6 +2,7 @@ package com.example.product.dto.request;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
@@ -59,5 +60,6 @@ public class ProductRequest {
      * 商品下的 SKU 列表。
      */
     @Valid
+    @NotEmpty(message = "商品至少需要一个 SKU")
     private List<ProductSkuRequest> skuList;
 }

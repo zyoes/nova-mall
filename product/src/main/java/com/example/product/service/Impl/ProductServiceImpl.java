@@ -41,6 +41,7 @@ public class ProductServiceImpl extends ServiceImpl<ProductMapper, Product> impl
     @Transactional
     public boolean saveOrUpdateProduct(ProductRequest request) {
         ensureCategoryExists(request.getCategoryId());
+        ensureSkuListNotEmpty(request.getSkuList());
         Product product = request.getId() == null ? new Product() : findProduct(request.getId());
 
         product.setName(request.getName());
@@ -52,11 +53,8 @@ public class ProductServiceImpl extends ServiceImpl<ProductMapper, Product> impl
         product.setSort(request.getSort());
 
         boolean saved = this.saveOrUpdate(product);
-        if (saved && request.getSkuList() != null && !request.getSkuList().isEmpty()) {
-            for (ProductSkuRequest skuRequest : request.getSkuList()) {
-                skuRequest.setProductId(product.getId());
-                productSkuService.saveOrUpdateSku(skuRequest);
-            }
+        if (saved) {
+            replaceProductSkus(product.getId(), request.getSkuList());
         }
 
         return saved;
@@ -164,6 +162,30 @@ public class ProductServiceImpl extends ServiceImpl<ProductMapper, Product> impl
                 .eq(ProductCategory::getId, categoryId));
         if (count == null || count == 0) {
             throw new CustomValidationException("商品分类不存在");
+        }
+    }
+
+    /**
+     * 校验商品至少包含一个 SKU。
+     */
+    private void ensureSkuListNotEmpty(List<ProductSkuRequest> skuList) {
+        if (skuList == null || skuList.isEmpty()) {
+            throw new CustomValidationException("商品至少需要一个 SKU");
+        }
+    }
+
+    /**
+     * 全量替换商品 SKU：先删除旧 SKU，再插入本次提交的 SKU。
+     */
+    private void replaceProductSkus(Long productId, List<ProductSkuRequest> skuList) {
+        // TODO: 如果后续订单关联了 SKU，不应使用物理/逻辑删除，应该修理原有SKU/停用不用的SKU/保留历史 SKU，只不再对用户端展示
+        productSkuService.remove(new LambdaQueryWrapper<ProductSku>()
+                .eq(ProductSku::getProductId, productId));
+
+        for (ProductSkuRequest skuRequest : skuList) {
+            skuRequest.setId(null);
+            skuRequest.setProductId(productId);
+            productSkuService.saveOrUpdateSku(skuRequest);
         }
     }
 
