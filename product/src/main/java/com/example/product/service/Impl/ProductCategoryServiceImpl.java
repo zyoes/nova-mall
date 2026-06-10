@@ -8,9 +8,12 @@ import com.example.common.response.PageResponse;
 import com.example.product.dto.request.ProductCategoryListRequest;
 import com.example.product.dto.request.ProductCategoryRequest;
 import com.example.product.dto.response.ProductCategoryResponse;
+import com.example.product.entity.Product;
 import com.example.product.entity.ProductCategory;
 import com.example.product.mapper.ProductCategoryMapper;
 import com.example.product.service.ProductCategoryService;
+import com.example.product.service.ProductService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
@@ -26,7 +29,9 @@ import java.util.stream.Collectors;
  * 商品分类服务实现
  */
 @Service
+@RequiredArgsConstructor
 public class ProductCategoryServiceImpl extends ServiceImpl<ProductCategoryMapper, ProductCategory> implements ProductCategoryService {
+    private final ProductService productService;
 
     /**
      * 保存或更新商品分类
@@ -99,6 +104,12 @@ public class ProductCategoryServiceImpl extends ServiceImpl<ProductCategoryMappe
     @Transactional
     public boolean deleteCategory(Long id) {
         findCategory(id);
+        if (this.exists(new LambdaQueryWrapper<ProductCategory>().eq(ProductCategory::getParentId, id))) {
+            throw new CustomValidationException("当前分类下存在子分类，不能删除");
+        }
+        if (productService.exists(new LambdaQueryWrapper<Product>().eq(Product::getCategoryId, id))) {
+            throw new CustomValidationException("当前分类已绑定商品，不能删除");
+        }
         return this.removeById(id);
     }
 
