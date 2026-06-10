@@ -10,7 +10,9 @@ import com.example.product.dto.request.ProductRequest;
 import com.example.product.dto.request.ProductSkuRequest;
 import com.example.product.dto.response.ProductResponse;
 import com.example.product.entity.Product;
+import com.example.product.entity.ProductCategory;
 import com.example.product.entity.ProductSku;
+import com.example.product.mapper.ProductCategoryMapper;
 import com.example.product.mapper.ProductMapper;
 import com.example.product.service.ProductService;
 import com.example.product.service.ProductSkuService;
@@ -30,6 +32,7 @@ public class ProductServiceImpl extends ServiceImpl<ProductMapper, Product> impl
     private static final int PRODUCT_STATUS_ON_SALE = 2;
 
     private final ProductSkuService productSkuService;
+    private final ProductCategoryMapper productCategoryMapper;
 
     /**
      * 保存或更新商品。
@@ -37,6 +40,7 @@ public class ProductServiceImpl extends ServiceImpl<ProductMapper, Product> impl
     @Override
     @Transactional
     public boolean saveOrUpdateProduct(ProductRequest request) {
+        ensureCategoryExists(request.getCategoryId());
         Product product = request.getId() == null ? new Product() : findProduct(request.getId());
 
         product.setName(request.getName());
@@ -150,6 +154,17 @@ public class ProductServiceImpl extends ServiceImpl<ProductMapper, Product> impl
     private Product findProduct(Long id) {
         return this.getOptById(id)
                 .orElseThrow(() -> new CustomValidationException("商品不存在"));
+    }
+
+    /**
+     * 校验商品分类存在，避免商品绑定不存在的分类。
+     */
+    private void ensureCategoryExists(Long categoryId) {
+        Long count = productCategoryMapper.selectCount(new LambdaQueryWrapper<ProductCategory>()
+                .eq(ProductCategory::getId, categoryId));
+        if (count == null || count == 0) {
+            throw new CustomValidationException("商品分类不存在");
+        }
     }
 
     /**
