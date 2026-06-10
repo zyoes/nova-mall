@@ -22,6 +22,7 @@ public class ProductSkuRequest {
     /**
      * 所属商品ID。
      */
+    @NotNull(message = "所属商品不能为空")
     private Long productId;
 
     /**
