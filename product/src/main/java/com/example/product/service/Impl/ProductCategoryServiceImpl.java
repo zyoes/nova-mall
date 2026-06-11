@@ -42,6 +42,7 @@ public class ProductCategoryServiceImpl extends ServiceImpl<ProductCategoryMappe
         ProductCategory category = request.getId() == null ? new ProductCategory() : findCategory(request.getId());
         Long parentId = request.getParentId() == null ? 0L : request.getParentId();
         Integer level = resolveCategoryLevel(category.getId(), parentId);
+        ensureCategoryNameUnique(category.getId(), parentId, request.getName());
 
         category.setName(request.getName());
         category.setParentId(parentId);
@@ -180,6 +181,22 @@ public class ProductCategoryServiceImpl extends ServiceImpl<ProductCategoryMappe
                 break;
             }
             cursor = this.getById(cursor.getParentId());
+        }
+    }
+
+    /**
+     * 校验同一父分类下分类名称不重复。
+     */
+    private void ensureCategoryNameUnique(Long currentId, Long parentId, String name) {
+        LambdaQueryWrapper<ProductCategory> qw = new LambdaQueryWrapper<ProductCategory>()
+                .eq(ProductCategory::getParentId, parentId)
+                .eq(ProductCategory::getName, name);
+        if (currentId != null) {
+            qw.ne(ProductCategory::getId, currentId);
+        }
+
+        if (this.exists(qw)) {
+            throw new CustomValidationException("同一父分类下分类名称不能重复");
         }
     }
 

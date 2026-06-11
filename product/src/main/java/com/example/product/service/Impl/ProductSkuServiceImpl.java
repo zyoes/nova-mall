@@ -40,6 +40,7 @@ public class ProductSkuServiceImpl extends ServiceImpl<ProductSkuMapper, Product
         ProductSku sku = request.getId() == null
                 ? new ProductSku()
                 : findSku(request.getId());
+        ensureSkuCodeUnique(sku.getId(), request.getSkuCode());
 
         sku.setProductId(request.getProductId());
         sku.setSkuCode(request.getSkuCode());
@@ -135,6 +136,21 @@ public class ProductSkuServiceImpl extends ServiceImpl<ProductSkuMapper, Product
                 .eq(Product::getId, productId));
         if (count == null || count == 0) {
             throw new CustomValidationException("商品不存在");
+        }
+    }
+
+    /**
+     * 校验 SKU 编码唯一。
+     */
+    private void ensureSkuCodeUnique(Long currentId, String skuCode) {
+        LambdaQueryWrapper<ProductSku> qw = new LambdaQueryWrapper<ProductSku>()
+                .eq(ProductSku::getSkuCode, skuCode);
+        if (currentId != null) {
+            qw.ne(ProductSku::getId, currentId);
+        }
+
+        if (this.exists(qw)) {
+            throw new CustomValidationException("SKU 编码已存在");
         }
     }
 
