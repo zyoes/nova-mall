@@ -37,6 +37,11 @@ public class ProductResponse {
     private Long categoryId;
 
     /**
+     * 所属分类名称。
+     */
+    private String categoryName;
+
+    /**
      * 商品封面图URL。
      */
     private String coverImage;

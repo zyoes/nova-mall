@@ -22,6 +22,9 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * 商品服务实现。
@@ -91,6 +94,7 @@ public class ProductServiceImpl extends ServiceImpl<ProductMapper, Product> impl
         }
 
         ProductResponse response = toResponse(product);
+        response.setCategoryName(getCategoryName(product.getCategoryId()));
         response.setSkuList(productSkuService.getSkuListByProductId(product.getId()));
         return response;
     }
@@ -134,8 +138,9 @@ public class ProductServiceImpl extends ServiceImpl<ProductMapper, Product> impl
     private PageResponse<ProductResponse> executePageQuery(ProductListRequest request,
                                                            LambdaQueryWrapper<Product> qw) {
         Page<Product> page = this.page(Page.of(request.getPage(), request.getSize()), qw);
+        Map<Long, String> categoryNameMap = getCategoryNameMap(page.getRecords());
         List<ProductResponse> list = page.getRecords().stream()
-                .map(this::toResponse)
+                .map(product -> toResponse(product, categoryNameMap))
                 .toList();
 
         PageResponse<ProductResponse> response = new PageResponse<>();
@@ -144,6 +149,34 @@ public class ProductServiceImpl extends ServiceImpl<ProductMapper, Product> impl
         response.setPage((int) page.getCurrent());
         response.setSize((int) page.getSize());
         return response;
+    }
+
+    /**
+     * 批量查询商品分类名称，避免商品列表逐条查询分类。
+     */
+    private Map<Long, String> getCategoryNameMap(List<Product> products) {
+        Set<Long> categoryIds = products.stream()
+                .map(Product::getCategoryId)
+                .collect(Collectors.toSet());
+        if (categoryIds.isEmpty()) {
+            return Map.of();
+        }
+
+        return productCategoryMapper.selectList(new LambdaQueryWrapper<ProductCategory>()
+                        .in(ProductCategory::getId, categoryIds))
+                .stream()
+                .collect(Collectors.toMap(ProductCategory::getId, ProductCategory::getName));
+    }
+
+    /**
+     * 查询单个分类名称。
+     */
+    private String getCategoryName(Long categoryId) {
+        if (categoryId == null) {
+            return null;
+        }
+        ProductCategory category = productCategoryMapper.selectById(categoryId);
+        return category == null ? null : category.getName();
     }
 
     /**
@@ -193,11 +226,19 @@ public class ProductServiceImpl extends ServiceImpl<ProductMapper, Product> impl
      * 将商品实体转换为响应对象。
      */
     private ProductResponse toResponse(Product product) {
+        return toResponse(product, Map.of());
+    }
+
+    /**
+     * 将商品实体转换为响应对象。
+     */
+    private ProductResponse toResponse(Product product, Map<Long, String> categoryNameMap) {
         ProductResponse response = new ProductResponse();
         response.setId(product.getId());
         response.setName(product.getName());
         response.setDescription(product.getDescription());
         response.setCategoryId(product.getCategoryId());
+        response.setCategoryName(categoryNameMap.get(product.getCategoryId()));
         response.setCoverImage(product.getCoverImage());
         response.setDetailImages(product.getDetailImages());
         response.setStatus(product.getStatus());
