@@ -1,5 +1,6 @@
 package com.example.product.dto.request;
 
+import com.example.common.constant.StatusConstant;
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
@@ -57,5 +58,5 @@ public class ProductSkuRequest {
     /**
      * SKU 状态：1-有效，0-无效。
      */
-    private Integer status = 1;
+    private Integer status = StatusConstant.SKU_STATUS_ENABLED;
 }

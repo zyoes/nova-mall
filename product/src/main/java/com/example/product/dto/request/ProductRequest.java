@@ -1,5 +1,6 @@
 package com.example.product.dto.request;
 
+import com.example.common.constant.StatusConstant;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
@@ -49,7 +50,7 @@ public class ProductRequest {
     /**
      * 商品状态：1-草稿，2-上架，3-下架。
      */
-    private Integer status = 1;
+    private Integer status = StatusConstant.PRODUCT_STATUS_DRAFT;
 
     /**
      * 排序值；数值越小越靠前。

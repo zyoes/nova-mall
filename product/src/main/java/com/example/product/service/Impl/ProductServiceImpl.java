@@ -3,6 +3,7 @@ package com.example.product.service.Impl;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.example.common.constant.StatusConstant;
 import com.example.common.exception.CustomValidationException;
 import com.example.common.response.PageResponse;
 import com.example.product.dto.request.ProductListRequest;
@@ -32,8 +33,6 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class ProductServiceImpl extends ServiceImpl<ProductMapper, Product> implements ProductService {
-    private static final int PRODUCT_STATUS_ON_SALE = 2;
-
     private final ProductSkuService productSkuService;
     private final ProductCategoryMapper productCategoryMapper;
 
@@ -69,7 +68,7 @@ public class ProductServiceImpl extends ServiceImpl<ProductMapper, Product> impl
     @Override
     public PageResponse<ProductResponse> getProductPage(ProductListRequest request) {
         LambdaQueryWrapper<Product> qw = buildQuery(request, false);
-        qw.eq(Product::getStatus, PRODUCT_STATUS_ON_SALE);
+        qw.eq(Product::getStatus, StatusConstant.PRODUCT_STATUS_ON_SALE);
         return executePageQuery(request, qw);
     }
 
@@ -88,7 +87,7 @@ public class ProductServiceImpl extends ServiceImpl<ProductMapper, Product> impl
     public ProductResponse getProductDetail(Long id) {
         Product product = this.getOne(new LambdaQueryWrapper<Product>()
                 .eq(Product::getId, id)
-                .eq(Product::getStatus, PRODUCT_STATUS_ON_SALE));
+                .eq(Product::getStatus, StatusConstant.PRODUCT_STATUS_ON_SALE));
         if (product == null) {
             throw new CustomValidationException("商品不存在或已下架");
         }

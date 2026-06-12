@@ -3,6 +3,7 @@ package com.example.product.service.Impl;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.example.common.constant.StatusConstant;
 import com.example.common.exception.CustomValidationException;
 import com.example.common.response.PageResponse;
 import com.example.product.dto.request.ProductSkuListRequest;
@@ -26,8 +27,6 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class ProductSkuServiceImpl extends ServiceImpl<ProductSkuMapper, ProductSku> implements ProductSkuService {
-    private static final int SKU_STATUS_ENABLED = 1;
-
     private final ProductMapper productMapper;
 
     /**
@@ -80,7 +79,7 @@ public class ProductSkuServiceImpl extends ServiceImpl<ProductSkuMapper, Product
     public List<ProductSkuResponse> getSkuListByProductId(Long productId) {
         return this.list(new LambdaQueryWrapper<ProductSku>()
                         .eq(ProductSku::getProductId, productId)
-                        .eq(ProductSku::getStatus, SKU_STATUS_ENABLED)
+                        .eq(ProductSku::getStatus, StatusConstant.SKU_STATUS_ENABLED)
                         .orderByDesc(ProductSku::getCreatedAt))
                 .stream()
                 .map(this::toResponse)
