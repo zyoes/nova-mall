@@ -22,6 +22,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -120,7 +121,7 @@ public class ProductServiceImpl extends ServiceImpl<ProductMapper, Product> impl
             qw.like(Product::getName, request.getKeyword());
         }
         if (request.getCategoryId() != null) {
-            qw.eq(Product::getCategoryId, request.getCategoryId());
+            qw.in(Product::getCategoryId, getCategoryAndChildIds(request.getCategoryId()));
         }
         if (includeStatus && request.getStatus() != null) {
             qw.eq(Product::getStatus, request.getStatus());
@@ -176,6 +177,39 @@ public class ProductServiceImpl extends ServiceImpl<ProductMapper, Product> impl
         }
         ProductCategory category = productCategoryMapper.selectById(categoryId);
         return category == null ? null : category.getName();
+    }
+
+    /**
+     * 查询当前分类及全部子分类 ID，用于父分类联动查询商品。
+     */
+    private List<Long> getCategoryAndChildIds(Long categoryId) {
+        List<ProductCategory> categories = productCategoryMapper.selectList(new LambdaQueryWrapper<>());
+        Set<Long> existingCategoryIds = categories.stream()
+                .map(ProductCategory::getId)
+                .collect(Collectors.toSet());
+        if (!existingCategoryIds.contains(categoryId)) {
+            return List.of(categoryId);
+        }
+
+        Map<Long, List<ProductCategory>> childrenMap = categories.stream()
+                .filter(category -> category.getParentId() != null)
+                .collect(Collectors.groupingBy(ProductCategory::getParentId));
+
+        List<Long> categoryIds = new ArrayList<>();
+        collectCategoryIds(categoryId, childrenMap, categoryIds);
+        return categoryIds;
+    }
+
+    /**
+     * 递归收集分类 ID。
+     */
+    private void collectCategoryIds(Long categoryId,
+                                    Map<Long, List<ProductCategory>> childrenMap,
+                                    List<Long> categoryIds) {
+        categoryIds.add(categoryId);
+        for (ProductCategory child : childrenMap.getOrDefault(categoryId, List.of())) {
+            collectCategoryIds(child.getId(), childrenMap, categoryIds);
+        }
     }
 
     /**
